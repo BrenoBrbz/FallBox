@@ -11,6 +11,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scene/Fall Box.unity
     guid: 50c1b201163a773498495c3a19bf632b
+  - enabled: 1
+    path: Assets/Scene/Demon Mode.unity
+    guid: 9b59ae0e1c69e404d8f1efecb3812c95
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
   m_UseUCBPForAssetBundles: 0

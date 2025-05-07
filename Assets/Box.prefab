@@ -14,8 +14,6 @@ GameObject:
   - component: {fileID: 1131170440717587743}
   - component: {fileID: 2278210336683379126}
   - component: {fileID: 2777131756094494564}
-  - component: {fileID: -2477614386305485024}
-  - component: {fileID: -5450290958059713370}
   m_Layer: 0
   m_Name: Box
   m_TagString: Inimigo
@@ -103,6 +101,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7adb77a02aae8f843a9e8429100ddf09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rotationSpeed: 360
+  fallSpeed: 2
+  breakEffect: {fileID: 0}
+  delayBeforeEffect: 0.1
 --- !u!65 &2278210336683379126
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -151,41 +153,3 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!111 &-2477614386305485024
-Animation:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8861412713293900440}
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Animation: {fileID: 7400000, guid: 1272dc2c05f009e4e8716e8b892e70ba, type: 2}
-  m_Animations: []
-  m_WrapMode: 0
-  m_PlayAutomatically: 1
-  m_AnimatePhysics: 0
-  m_UpdateMode: 0
-  m_CullingType: 0
---- !u!95 &-5450290958059713370
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8861412713293900440}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_UpdateMode: 1
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 1
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
