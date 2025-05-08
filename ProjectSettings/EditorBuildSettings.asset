@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Scene/Menu.unity
     guid: 9d786c52bcbec004ab5bcdab43cb898c
   - enabled: 1
+    path: Assets/Scene/Config.unity
+    guid: eed942cd91f7fb9479f1ab08f3473483
+  - enabled: 1
     path: Assets/Scene/Fall Box.unity
     guid: 50c1b201163a773498495c3a19bf632b
   - enabled: 1

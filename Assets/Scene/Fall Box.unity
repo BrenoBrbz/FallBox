@@ -671,7 +671,7 @@ Light:
   m_Enabled: 1
   serializedVersion: 11
   m_Type: 1
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.8443396, g: 1, b: 0.94398874, a: 1}
   m_Intensity: 130000
   m_Range: 10
   m_SpotAngle: 30
@@ -715,7 +715,7 @@ Light:
   m_LightShadowCasterMode: 2
   m_AreaSize: {x: 0.5, y: 0.5}
   m_BounceIntensity: 1
-  m_ColorTemperature: 6500
+  m_ColorTemperature: 12724
   m_UseColorTemperature: 1
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
@@ -7598,14 +7598,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07b67ee4a0c9d5348a96e8645b340480, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 3
+  speed: 3.5
   jumpForce: 5
   groundLayer:
     serializedVersion: 2
     m_Bits: 0
   groundCheck: {fileID: 0}
   groundCheckRadius: 0.1
+  dashForce: 10
+  dashDuration: 0.2
+  dashCooldown: 1
   deathEffect: {fileID: 660027590}
+  swipeSpeed: 0.1
 --- !u!114 &808902135
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19311,9 +19315,21 @@ PrefabInstance:
     m_TransformParent: {fileID: 1390771517}
     m_Modifications:
     - target: {fileID: 1131170440717587743, guid: 12125a0dee571c04c8cd7bf6f96f19fc, type: 3}
+      propertyPath: visual
+      value: 
+      objectReference: {fileID: 1997346426}
+    - target: {fileID: 1131170440717587743, guid: 12125a0dee571c04c8cd7bf6f96f19fc, type: 3}
+      propertyPath: fallSpeed
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1131170440717587743, guid: 12125a0dee571c04c8cd7bf6f96f19fc, type: 3}
       propertyPath: breakEffect
       value: 
       objectReference: {fileID: 974914886}
+    - target: {fileID: 1131170440717587743, guid: 12125a0dee571c04c8cd7bf6f96f19fc, type: 3}
+      propertyPath: acelerarComTempo
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2278210336683379126, guid: 12125a0dee571c04c8cd7bf6f96f19fc, type: 3}
       propertyPath: m_Size.x
       value: 1.9725189
@@ -21283,7 +21299,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3653c72d889152b4c8543ce53b659a5c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 6.430969
+      value: 6.26
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3653c72d889152b4c8543ce53b659a5c, type: 3}
       propertyPath: m_LocalPosition.z

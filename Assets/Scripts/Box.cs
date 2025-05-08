@@ -2,24 +2,47 @@ using UnityEngine;
 
 public class Box : MonoBehaviour
 {
+    [Header("Movimento")]
     public float rotationSpeed = 360f;
     public float fallSpeed = 2f;
     private bool isFalling = false;
+
+    [Header("Efeito de destruição")]
     public GameObject breakEffect; // Partícula de destruição
     public float delayBeforeEffect = 0.1f;
-    
-    private void Update()
+
+    [Header("Ajustes dinâmicos")]
+    public bool acelerarComTempo = false;
+    public float aceleracao = 0.5f;
+
+    public Transform visual;
+
+    void Start()
+{
+    StartFalling(); // Faz a box começar a cair assim que for ativada
+}
+
+private void Update()
+{
+    if (isFalling)
     {
-        if (isFalling)
-        {
-            transform.Rotate(Vector3.forward * rotationSpeed * Time.deltaTime);
-            transform.position += Vector3.down * fallSpeed * Time.deltaTime;
-        }
+        if (visual != null)
+            visual.Rotate(Vector3.forward * rotationSpeed * Time.deltaTime);
+
+        transform.position += Vector3.down * fallSpeed * Time.deltaTime;
     }
+}
+
+
 
     public void StartFalling()
     {
         isFalling = true;
+    }
+
+    public void SetFallSpeed(float newSpeed)
+    {
+        fallSpeed = newSpeed;
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -42,5 +65,3 @@ public class Box : MonoBehaviour
         Destroy(gameObject);
     }
 }
-
-
