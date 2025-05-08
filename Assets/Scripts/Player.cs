@@ -31,7 +31,10 @@ public class Player : MonoBehaviour
     private bool isDead = false;
     private float horizontalInput = 0f;
     private bool isGrounded;
-    private TrailRenderer trail;
+    private TrailRenderer trail; 
+    private float lastTapTimeLeft = 0f;
+    private float lastTapTimeRight = 0f;
+    private float doubleTapThreshold = 0.3f;
 
     void Start()
     {
@@ -42,53 +45,28 @@ public class Player : MonoBehaviour
 
  void Update()
 {
-  // Verifica se houve um toque na tela
-if (Input.touchCount > 0)
-{
-    Touch touch = Input.GetTouch(0); // A primeira tela de toque
+    HandleTouchControls();
 
-    if (touch.phase == TouchPhase.Began)
-    {
-        touchStartPos = touch.position; // Armazena a posição inicial do toque
-    }
-
-    if (touch.phase == TouchPhase.Ended)
-    {
-        touchEndPos = touch.position; // Armazena a posição final
-
-        // Calcula a diferença entre as posições
-        float deltaX = touchEndPos.x - touchStartPos.x;
-
-        // Desloca o jogador com base na diferença
-        float movement = deltaX * swipeSpeed;
-
-        // Aplica a movimentação no personagem
-        Vector3 move = new Vector3(movement, 0f, 0f);
-        transform.Translate(move * Time.deltaTime);
-    }
-}
-
-
-    // Movimento horizontal (Teclado)
+    // Movimento via teclado
     if (!isDashing)
-        horizontalInput = -Input.GetAxisRaw("Horizontal");
+        horizontalInput = -Input.GetAxisRaw("Horizontal"); // "-" pois você estava invertendo antes
 
     // Verifica se está no chão
     isGrounded = Physics.CheckSphere(groundCheck.position, groundCheckRadius, groundLayer);
 
-    // Pulo
+    // Pulo com teclado
     if (Input.GetKeyDown(KeyCode.Space) && isGrounded && !isDashing)
     {
         rb.velocity = new Vector3(rb.velocity.x, jumpForce, rb.velocity.z);
     }
 
-    // Dash
+    // Dash com teclado
     if (Input.GetKeyDown(KeyCode.LeftShift) && !isDashing && Time.time >= lastDashTime + dashCooldown && horizontalInput != 0)
     {
         StartDash();
     }
 
-    // Timer de dash
+    // Timer do dash
     if (isDashing)
     {
         dashTimeLeft -= Time.deltaTime;
@@ -99,6 +77,55 @@ if (Input.touchCount > 0)
     }
 }
 
+void HandleTouchControls()
+{
+    if (Input.touchCount > 0)
+    {
+        foreach (Touch touch in Input.touches)
+        {
+            Vector2 touchPos = touch.position;
+            bool isLeft = touchPos.x < Screen.width / 2;
+            bool isRight = touchPos.x >= Screen.width / 2;
+
+            // Movimento por toque
+            if (touch.phase == TouchPhase.Stationary || touch.phase == TouchPhase.Moved)
+            {
+                if (isLeft) horizontalInput = -1;
+                else if (isRight) horizontalInput = 1;
+            }
+
+            // Pulo (arrasto para cima)
+            if (touch.phase == TouchPhase.Ended)
+            {
+                Vector2 delta = touch.position - touch.rawPosition;
+                if (delta.y > 100 && isGrounded && !isDashing)
+                {
+                    rb.velocity = new Vector3(rb.velocity.x, jumpForce, rb.velocity.z);
+                }
+
+                // Dash com dois toques no mesmo lado
+                if (isLeft)
+                {
+                    if (Time.time - lastTapTimeLeft < doubleTapThreshold && !isDashing)
+                    {
+                        horizontalInput = -1;
+                        StartDash();
+                    }
+                    lastTapTimeLeft = Time.time;
+                }
+                else if (isRight)
+                {
+                    if (Time.time - lastTapTimeRight < doubleTapThreshold && !isDashing)
+                    {
+                        horizontalInput = 1;
+                        StartDash();
+                    }
+                    lastTapTimeRight = Time.time;
+                }
+            }
+        }
+    }
+}
 
     void FixedUpdate()
     {
