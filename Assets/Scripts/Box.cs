@@ -2,8 +2,9 @@ using UnityEngine;
 
 public class Box : MonoBehaviour
 {
+    Vector3 rotation;
+
     [Header("Movimento")]
-    public float rotationSpeed = 360f;
     public float fallSpeed = 2f;
     private bool isFalling = false;
 
@@ -15,25 +16,20 @@ public class Box : MonoBehaviour
     public bool acelerarComTempo = false;
     public float aceleracao = 0.5f;
 
-    public Transform visual;
-
     void Start()
 {
-    StartFalling(); // Faz a box começar a cair assim que for ativada
+    rotation = new Vector3(Random.Range(0.2f, 1f), 0f, 0f);
+    StartFalling();
 }
 
-private void Update()
-{
-    if (isFalling)
+    private void Update()
     {
-        if (visual != null)
-            visual.Rotate(Vector3.forward * rotationSpeed * Time.deltaTime);
-
-        transform.position += Vector3.down * fallSpeed * Time.deltaTime;
+        transform.Rotate(rotation);
+        if (isFalling)
+        {
+            transform.position += Vector3.down * fallSpeed * Time.deltaTime;
+        }
     }
-}
-
-
 
     public void StartFalling()
     {

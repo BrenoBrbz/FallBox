@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 public class Player : MonoBehaviour
 {
     [Header("Movimentação")]
-    public float speed = 3f;
+    public float speed = 5f;
     private float moveInput;
     public float jumpForce = 5;
     public LayerMask groundLayer;
@@ -31,7 +31,7 @@ public class Player : MonoBehaviour
     private bool isDead = false;
     private float horizontalInput = 0f;
     private bool isGrounded;
-    private TrailRenderer trail; 
+    private TrailRenderer trail;
     private float lastTapTimeLeft = 0f;
     private float lastTapTimeRight = 0f;
     private float doubleTapThreshold = 0.3f;
@@ -43,98 +43,110 @@ public class Player : MonoBehaviour
         trail.emitting = false;
     }
 
- void Update()
-{
-    HandleTouchControls();
-
-    // Movimento via teclado
-    if (!isDashing)
-        horizontalInput = -Input.GetAxisRaw("Horizontal"); // "-" pois você estava invertendo antes
-
-    // Verifica se está no chão
-    isGrounded = Physics.CheckSphere(groundCheck.position, groundCheckRadius, groundLayer);
-
-    // Pulo com teclado
-    if (Input.GetKeyDown(KeyCode.Space) && isGrounded && !isDashing)
+    void Update()
     {
-        rb.velocity = new Vector3(rb.velocity.x, jumpForce, rb.velocity.z);
-    }
+        HandleTouchControls();
 
-    // Dash com teclado
-    if (Input.GetKeyDown(KeyCode.LeftShift) && !isDashing && Time.time >= lastDashTime + dashCooldown && horizontalInput != 0)
-    {
-        StartDash();
-    }
-
-    // Timer do dash
-    if (isDashing)
-    {
-        dashTimeLeft -= Time.deltaTime;
-        if (dashTimeLeft <= 0)
-        {
-            EndDash();
-        }
-    }
-}
-
-void HandleTouchControls()
-{
-    if (Input.touchCount > 0)
-    {
-        foreach (Touch touch in Input.touches)
-        {
-            Vector2 touchPos = touch.position;
-            bool isLeft = touchPos.x < Screen.width / 2;
-            bool isRight = touchPos.x >= Screen.width / 2;
-
-            // Movimento por toque
-            if (touch.phase == TouchPhase.Stationary || touch.phase == TouchPhase.Moved)
-            {
-                if (isLeft) horizontalInput = -1;
-                else if (isRight) horizontalInput = 1;
-            }
-
-            // Pulo (arrasto para cima)
-            if (touch.phase == TouchPhase.Ended)
-            {
-                Vector2 delta = touch.position - touch.rawPosition;
-                if (delta.y > 100 && isGrounded && !isDashing)
-                {
-                    rb.velocity = new Vector3(rb.velocity.x, jumpForce, rb.velocity.z);
-                }
-
-                // Dash com dois toques no mesmo lado
-                if (isLeft)
-                {
-                    if (Time.time - lastTapTimeLeft < doubleTapThreshold && !isDashing)
-                    {
-                        horizontalInput = -1;
-                        StartDash();
-                    }
-                    lastTapTimeLeft = Time.time;
-                }
-                else if (isRight)
-                {
-                    if (Time.time - lastTapTimeRight < doubleTapThreshold && !isDashing)
-                    {
-                        horizontalInput = 1;
-                        StartDash();
-                    }
-                    lastTapTimeRight = Time.time;
-                }
-            }
-        }
-    }
-}
-
-    void FixedUpdate()
-    {
+        // Movimento via teclado
         if (!isDashing)
+            horizontalInput = -Input.GetAxisRaw("Horizontal"); // "-" pois você estava invertendo antes
+
+        // Verifica se está no chão
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundCheckRadius, groundLayer);
+
+        // Pulo com teclado
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded && !isDashing)
         {
-            Vector3 move = new Vector3(horizontalInput * speed, rb.velocity.y, 0f);
-            rb.MovePosition(rb.position + new Vector3(horizontalInput, 0f, 0f) * speed * Time.fixedDeltaTime);
+            rb.velocity = new Vector3(rb.velocity.x, jumpForce, rb.velocity.z);
+        }
+
+        // Dash com teclado
+        if (Input.GetKeyDown(KeyCode.LeftShift) && !isDashing && Time.time >= lastDashTime + dashCooldown && horizontalInput != 0)
+        {
+            StartDash();
+        }
+
+        // Timer do dash
+        if (isDashing)
+        {
+            dashTimeLeft -= Time.deltaTime;
+            if (dashTimeLeft <= 0)
+            {
+                EndDash();
+            }
         }
     }
+
+    void HandleTouchControls()
+    {
+        if (Input.touchCount > 0)
+        {
+            foreach (Touch touch in Input.touches)
+            {
+                Vector2 touchPos = touch.position;
+                bool isLeft = touchPos.x < Screen.width / 2;
+                bool isRight = touchPos.x >= Screen.width / 2;
+
+                // Movimento por toque
+                if (touch.phase == TouchPhase.Stationary || touch.phase == TouchPhase.Moved)
+                {
+                    if (isLeft) horizontalInput = -1;
+                    else if (isRight) horizontalInput = 1;
+                }
+
+                // Pulo (arrasto para cima)
+                if (touch.phase == TouchPhase.Ended)
+                {
+                    Vector2 delta = touch.position - touch.rawPosition;
+                    if (delta.y > 100 && isGrounded && !isDashing)
+                    {
+                        rb.velocity = new Vector3(rb.velocity.x, jumpForce, rb.velocity.z);
+                    }
+
+                    // Dash com dois toques no mesmo lado
+                    if (isLeft)
+                    {
+                        if (Time.time - lastTapTimeLeft < doubleTapThreshold && !isDashing)
+                        {
+                            horizontalInput = -1;
+                            StartDash();
+                        }
+                        lastTapTimeLeft = Time.time;
+                    }
+                    else if (isRight)
+                    {
+                        if (Time.time - lastTapTimeRight < doubleTapThreshold && !isDashing)
+                        {
+                            horizontalInput = 1;
+                            StartDash();
+                        }
+                        lastTapTimeRight = Time.time;
+                    }
+                }
+            }
+        }
+    }
+
+void FixedUpdate()
+{
+    if (!isDashing)
+    {
+        float moveForce = 20f;           // menor força, porque ForceMode.Force é contínuo
+        float torqueAmount = 1f;         // rotação suave
+        float maxSpeed = 3f;             // limite de velocidade
+
+        // Limita a velocidade máxima
+        if (Mathf.Abs(rb.velocity.x) < maxSpeed)
+        {
+            rb.AddForce(new Vector3(horizontalInput * moveForce, 0f, 0f), ForceMode.Force);
+        }
+
+        // Rotação controlada
+        rb.AddTorque(new Vector3(0f, 0f, -horizontalInput * torqueAmount), ForceMode.Force);
+    }
+}
+
+
 
     void StartDash()
     {
@@ -143,13 +155,13 @@ void HandleTouchControls()
         lastDashTime = Time.time;
 
         rb.velocity = new Vector3(horizontalInput * dashForce, 0f, 0f);
-        trail.emitting = true; // ativa o rastro
+        trail.emitting = true;
     }
 
     void EndDash()
     {
         isDashing = false;
-        trail.emitting = false; // desativa o rastro
+        trail.emitting = false;
     }
 
     private void OnDrawGizmosSelected()
